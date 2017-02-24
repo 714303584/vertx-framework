@@ -1,5 +1,7 @@
 package com.ifreeshare.framework.web.annotation;
 
+import io.vertx.core.http.HttpMethod;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -100,7 +102,7 @@ public @interface RequestMapping {
 
 	 */
 
-	RequestMethod[] method() default {};
+	HttpMethod[] method() default {};
 
 
 
