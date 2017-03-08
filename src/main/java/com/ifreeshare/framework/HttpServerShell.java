@@ -25,18 +25,27 @@ import com.ifreeshare.util.ReflectUtil;
  */
 public class HttpServerShell {
 
-	public static String CONTROLLER_PACKAGE = "com.ifreeshare.framework.web.controller";
+	public String CONTROLLER_PACKAGE = "com.ifreeshare.spider.http.server.controller";
 
 	private HttpServer httpServer;
 
 	private Router router;
 
 	// Template Engine (freemarker)
-	FreeMarkerTemplateEngine freeMarkerTemplateEngine = FreeMarkerTemplateEngine.create();
+	FreeMarkerTemplateEngine freeMarkerTemplateEngine  = FreeMarkerTemplateEngine.create();
 
-	public HttpServerShell(HttpServer httpServer, Router router) {
+	public HttpServerShell(HttpServer httpServer, Router router, String packages) {
 		this.httpServer = httpServer;
 		this.router = router;
+		this.CONTROLLER_PACKAGE = packages;
+	}
+	
+	public FreeMarkerTemplateEngine getFreeMarkerTemplateEngine() {
+		return freeMarkerTemplateEngine;
+	}
+
+	public void setFreeMarkerTemplateEngine(FreeMarkerTemplateEngine freeMarkerTemplateEngine) {
+		this.freeMarkerTemplateEngine = freeMarkerTemplateEngine;
 	}
 
 	public HttpServer getHttpServer() {
