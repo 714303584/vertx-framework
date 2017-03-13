@@ -1,5 +1,6 @@
 package com.ifreeshare.framework;
 
+import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerResponse;
@@ -27,41 +28,26 @@ public class HttpServerShell {
 
 	public String CONTROLLER_PACKAGE = "com.ifreeshare.spider.http.server.controller";
 
+	//Open the HTTP service entity
 	private HttpServer httpServer;
 
+	//The route to the HTTP address
 	private Router router;
 
 	// Template Engine (freemarker)
 	FreeMarkerTemplateEngine freeMarkerTemplateEngine  = FreeMarkerTemplateEngine.create();
+	
+	private Vertx vertx;
+
+	public HttpServerShell(Vertx vertx) {
+		super();
+		this.vertx = vertx;
+	}
 
 	public HttpServerShell(HttpServer httpServer, Router router, String packages) {
 		this.httpServer = httpServer;
 		this.router = router;
 		this.CONTROLLER_PACKAGE = packages;
-	}
-	
-	public FreeMarkerTemplateEngine getFreeMarkerTemplateEngine() {
-		return freeMarkerTemplateEngine;
-	}
-
-	public void setFreeMarkerTemplateEngine(FreeMarkerTemplateEngine freeMarkerTemplateEngine) {
-		this.freeMarkerTemplateEngine = freeMarkerTemplateEngine;
-	}
-
-	public HttpServer getHttpServer() {
-		return httpServer;
-	}
-
-	public void setHttpServer(HttpServer httpServer) {
-		this.httpServer = httpServer;
-	}
-
-	public Router getRouter() {
-		return router;
-	}
-
-	public void setRouter(Router router) {
-		this.router = router;
 	}
 
 	// Initialize the route
@@ -132,43 +118,93 @@ public class HttpServerShell {
 	 * @param context				The context of the request
 	 */
 	public void requestProccess(Method method, Object newInstance, RoutingContext context){
-		try {
-			Object returnValue = method.invoke(newInstance, context);
-			if (returnValue != null) {
-				HttpServerResponse response = context.response();
-				//If the return is a JSON, direct output.
-				if (returnValue instanceof JsonObject) {
-					response.putHeader("Content-Type", "application/json");
-					JsonObject returnJson = (JsonObject) returnValue;
-					response.end(returnJson.toString());
-				} else if (returnValue instanceof String) {			//return string.
-					String returnString = returnValue.toString();
-					if(returnString.startsWith("template:")){		//The string starts with template.
-						//Parse the template path and render the template.
-						String template = returnString.substring(9);
-						freeMarkerTemplateEngine.render(context, template, res -> {
-							if (res.succeeded()) {
-								context.response().putHeader("content-type", "text/html");
-								context.response().end(res.result());
-							} else {
-								context.fail(res.cause());
-							}
-						});
-					}else if(returnString.startsWith("redirect:")){ 		//The string starts with redirect.
-						//Redirect the request to a new address
-						String url = returnString.substring(9);
-						 response.putHeader("location", url).setStatusCode(302).end();
-					}else{			//Other strings, output to response.
-						response.end(returnString);
+			try {
+				Object returnValue = method.invoke(newInstance, context);
+				if (returnValue != null) {
+					HttpServerResponse response = context.response();
+					//If the return is a JSON, direct output.
+					if (returnValue instanceof JsonObject) {
+						response.putHeader("Content-Type", "application/json");
+						JsonObject returnJson = (JsonObject) returnValue;
+						response.end(returnJson.toString());
+					} else if (returnValue instanceof String) {			//return string.
+						String returnString = returnValue.toString();
+						if(returnString.startsWith("template:")){		//The string starts with template.
+							//Parse the template path and render the template.
+							String template = returnString.substring(9);
+							freeMarkerTemplateEngine.render(context, template, res -> {
+								if (res.succeeded()) {
+									context.response().putHeader("content-type", "text/html");
+									context.response().end(res.result());
+								} else {
+									context.fail(res.cause());
+								}
+							});
+						}else if(returnString.startsWith("redirect:")){ 		//The string starts with redirect.
+							//Redirect the request to a new address
+							String url = returnString.substring(9);
+							 response.putHeader("location", url).setStatusCode(302).end();
+						}else{			//Other strings, output to response.
+							response.end(returnString);
+						}
+					} else{
+	
 					}
-				} else{
-
-				}
-				// System.out.println(returnValue.getClass().getName());
+					// System.out.println(returnValue.getClass().getName());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-	} catch (Exception e) {
-		e.printStackTrace();
 	}
+	
+	/**
+	 * Open the HTTP service
+	 * @param port	------- The port number of the HTTP service
+	 */
+	public void startHttpServer(int port){
+		
+		//
+		if(httpServer == null) httpServer = vertx.createHttpServer();
+		
+		if(router == null) router = Router.router(vertx);
+		
+		if(CONTROLLER_PACKAGE != null){
+			initRouter();
+		}
+		
+		httpServer.requestHandler(router::accept).listen(port);
+	}
+	
+	/**
+	 * Open the default HTTP service
+	 */
+	public void startDefaultHttpServer(){
+		startHttpServer(8080);
+	}
+	
+	
+	public FreeMarkerTemplateEngine getFreeMarkerTemplateEngine() {
+		return freeMarkerTemplateEngine;
+	}
+
+	public void setFreeMarkerTemplateEngine(FreeMarkerTemplateEngine freeMarkerTemplateEngine) {
+		this.freeMarkerTemplateEngine = freeMarkerTemplateEngine;
+	}
+
+	public HttpServer getHttpServer() {
+		return httpServer;
+	}
+
+	public void setHttpServer(HttpServer httpServer) {
+		this.httpServer = httpServer;
+	}
+
+	public Router getRouter() {
+		return router;
+	}
+
+	public void setRouter(Router router) {
+		this.router = router;
 	}
 
 }
