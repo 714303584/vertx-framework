@@ -125,18 +125,26 @@ public class HttpServerShell {
 
 	}
 	
+	/**
+	 * Return value processing
+	 * @param method				Need to deal with the method
+	 * @param newInstance			Method belongs to the Instance
+	 * @param context				The context of the request
+	 */
 	public void requestProccess(Method method, Object newInstance, RoutingContext context){
 		try {
 			Object returnValue = method.invoke(newInstance, context);
 			if (returnValue != null) {
 				HttpServerResponse response = context.response();
+				//If the return is a JSON, direct output.
 				if (returnValue instanceof JsonObject) {
 					response.putHeader("Content-Type", "application/json");
 					JsonObject returnJson = (JsonObject) returnValue;
 					response.end(returnJson.toString());
-				} else if (returnValue instanceof String) {
+				} else if (returnValue instanceof String) {			//return string.
 					String returnString = returnValue.toString();
-					if(returnString.startsWith("template:")){
+					if(returnString.startsWith("template:")){		//The string starts with template.
+						//Parse the template path and render the template.
 						String template = returnString.substring(9);
 						freeMarkerTemplateEngine.render(context, template, res -> {
 							if (res.succeeded()) {
@@ -146,10 +154,11 @@ public class HttpServerShell {
 								context.fail(res.cause());
 							}
 						});
-					}else if(returnString.startsWith("redirect:")){
+					}else if(returnString.startsWith("redirect:")){ 		//The string starts with redirect.
+						//Redirect the request to a new address
 						String url = returnString.substring(9);
 						 response.putHeader("location", url).setStatusCode(302).end();
-					}else{
+					}else{			//Other strings, output to response.
 						response.end(returnString);
 					}
 				} else{
