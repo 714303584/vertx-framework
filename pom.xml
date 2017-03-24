@@ -53,30 +53,6 @@
 			<version>${stack.version}</version>
 		</dependency>
 
-
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient-cache</artifactId>
-			<version>4.4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpmime</artifactId>
-			<version>4.4</version>
-		</dependency>
-
-
-		<dependency>
-			<groupId>org.jsoup</groupId>
-			<artifactId>jsoup</artifactId>
-			<version>1.9.2</version>
-		</dependency>
-
 		<dependency>
 			<groupId>io.vertx</groupId>
 			<artifactId>vertx-core</artifactId>
@@ -152,49 +128,6 @@
 			<artifactId>vertx-sync</artifactId>
 			<version>${stack.version}</version>
 		</dependency>
-
-
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-core</artifactId>
-			<version>6.3.0</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-memory</artifactId>
-			<version>6.3.0</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-highlighter</artifactId>
-			<version>6.3.0</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-queryparser</artifactId>
-			<version>6.3.0</version>
-		</dependency>
-
-
-		<dependency>
-			<groupId>redis.clients</groupId>
-			<artifactId>jedis</artifactId>
-			<version>2.8.1</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-
-
-		<dependency>
-			<groupId>IKAnalyzer</groupId>
-			<artifactId>IKAnalyzer</artifactId>
-			<version>2012FF_hf1</version>
-		</dependency>
-
-
 		<!-- <dependency> <groupId>net.sourceforge.htmlunit</groupId> <artifactId>htmlunit</artifactId> 
 			<version>2.23</version> </dependency> -->
 		<!-- https://mvnrepository.com/artifact/com.artofsolving/jodconverter <dependency> 
@@ -205,13 +138,6 @@
 			<artifactId>util</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-
-		<dependency>
-			<groupId>ifreeshare</groupId>
-			<artifactId>ElasticSearch</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
 
 	</dependencies>
 
