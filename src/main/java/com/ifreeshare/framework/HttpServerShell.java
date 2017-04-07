@@ -11,12 +11,12 @@ import io.vertx.ext.web.templ.FreeMarkerTemplateEngine;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.Iterator;
 import java.util.List;
 
 import com.ifreeshare.framework.annotation.Controller;
 import com.ifreeshare.framework.web.annotation.RequestMapping;
-import com.ifreeshare.framework.web.annotation.RequestMethod;
 import com.ifreeshare.util.ReflectUtil;
 
 /**
@@ -119,6 +119,30 @@ public class HttpServerShell {
 	 */
 	public void requestProccess(Method method, Object newInstance, RoutingContext context){
 			try {
+				
+				Parameter[] parameters = method.getParameters();
+				
+				for (int i = 0; i < parameters.length; i++) {
+					Parameter parameter = parameters[i];
+					String pName = parameter.getName();
+					
+					Class clazz = parameter.getType();
+					
+					
+					
+				}
+				
+				
+				
+				
+//				method.invoke(obj, args)
+				
+				
+				
+				
+				
+				
+				
 				Object returnValue = method.invoke(newInstance, context);
 				if (returnValue != null) {
 					HttpServerResponse response = context.response();
@@ -156,6 +180,19 @@ public class HttpServerShell {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	
+	public Object getType(String value, Class clazz){
+		Object result = null;
+		
+		
+		return result;
+	}
+	
+	
+	
+	
 	
 	/**
 	 * Open the HTTP service
